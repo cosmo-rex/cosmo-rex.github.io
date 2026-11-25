@@ -28,7 +28,8 @@ a{color:inherit}
 .wrap{max-width:1240px;margin:0 auto}
 nav{position:fixed;top:0;left:0;right:0;z-index:5}
 html:not([data-view=home]) nav{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px)}
-.view{display:none;padding-top:64px;min-height:100svh}
+.view{display:none;padding-top:calc(var(--nh,64px) + 8px)!important;min-height:100svh}
+#home.view{padding-top:0!important}
 html[data-view=home] body::before{display:none}
 html[data-view=home] body{background:#05060a}
 html[data-view=home] #home,html[data-view=lab] #lab,html[data-view=now] #now,html[data-view=journal] #journal,html[data-view=ping] #ping{display:block}
@@ -44,7 +45,7 @@ nav .wrap{display:flex;align-items:center;gap:6px 22px;flex-wrap:wrap;padding:10
 .lang button,.ctl button{font:500 13px "Share Tech Mono",monospace;color:var(--mute);background:none;border:0;border-radius:6px;padding:6px 10px;min-height:36px;cursor:pointer}
 .lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 button:focus-visible,a:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
-.hero{position:relative;height:100svh;min-height:480px;padding:0}
+.hero{position:relative;height:100svh;min-height:420px;padding:0}
 .node{font:11px "Share Tech Mono",monospace;letter-spacing:.24em;color:#5d6577;margin-bottom:4px}
 .foot{position:absolute;left:0;right:0;bottom:0;padding-block:32px clamp(24px,6vh,56px)!important;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding:0 16px;text-align:center}
 .term{letter-spacing:.04em;max-width:min(92vw,760px);min-height:1.5em}
@@ -235,7 +236,7 @@ html.cc .cur.on{opacity:1}
   const proj=(x,y,z)=>{const cy=Math.cos(cam.ry),sy=Math.sin(cam.ry),cr=Math.cos(cam.rx),sr=Math.sin(cam.rx);
     const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cr-z1*sr,z2=y*sr+z1*cr,f=FOV/(FOV+z2);return [W/2+x1*f,OY+y1*f,f,z2]};
   const orbit=(t,front)=>{
-    const R=Math.min(W*.36,FOV*.42),rings=[[.3,1,'232,236,241']];
+    const R=Math.min(W*.36,FOV*.42,H*.55),rings=[[.3,1,'232,236,241']];
     cx.lineWidth=1.2;
     rings.forEach(([tilt,spd,col],ri)=>{
       const n=160,ph=reduce?0:t*.00018*spd;
@@ -386,6 +387,9 @@ html.cc .cur.on{opacity:1}
     addEventListener('pointerdown',()=>cr.classList.add('down'));
     addEventListener('pointerup',()=>cr.classList.remove('down'));
   }
+
+  /* nav height for page offset */
+  {const nv=document.querySelector('nav');const nh=()=>root.style.setProperty('--nh',nv.offsetHeight+'px');nh();new ResizeObserver(nh).observe(nv)}
 
   /* router */
   const views=['home','lab','now','journal','ping'];
