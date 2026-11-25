@@ -206,8 +206,8 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
     g.font='900 100px Orbitron,sans-serif';const tw=g.measureText('COSMOREX').width;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);
     g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
     g.font=`900 ${big}px Orbitron,sans-serif`;g.fillText('COSMOREX',W/2,H*.4);
-    const d=g.getImageData(0,0,W,H).data,step=W<600?2:3,t=[];
-    for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(d[(y*W+x)*4+3]>128)t.push([x,y]);
+    const d=g.getImageData(0,0,W,H).data;let step=W<600?2:3,t=[];const MAXP=W<600?3500:7000;
+    for(;;){t=[];for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(d[(y*W+x)*4+3]>128)t.push([x,y]);if(t.length<=MAXP||step>=8)break;step++}
     const dep=W<600?6:10;
     pts=t.map(([x,y])=>{const c=Math.random()<.05?C1:[236,239,245];
       return {tx:x-W/2,ty:y-H*.4,tz:(Math.random()-.5)*dep,x:(Math.random()-.5)*W*1.6,y:(Math.random()-.5)*H*1.4,z:(Math.random()-.5)*1400,vx:0,vy:0,vz:0,c:`rgb(${c})`}});
@@ -247,17 +247,19 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
     const try_=mouse.on?(mouse.x/W-.5)*.4:0,trx=mouse.on?-(mouse.y/H-.5)*.2:0;
     if(!reduce){cam.ry+=(try_-cam.ry)*.05;cam.rx+=(trx-cam.rx)*.05}
     cx.clearRect(0,0,W,H);bg(t);orbit(t,false);
-    cx.globalCompositeOperation='lighter';
+    const cy_=Math.cos(cam.ry),sy_=Math.sin(cam.ry),cr_=Math.cos(cam.rx),sr_=Math.sin(cam.rx),ox=W/2,oy=H*.4,base=W<600?1.6:1.9,mx=mouse.x,my=mouse.y,act=!reduce;
+    const paths={};
     for(const p of pts){
-      if(!reduce){
-        const q=proj(p.x,p.y,p.z),dx=q[0]-mouse.x,dy=q[1]-mouse.y,d2=dx*dx+dy*dy;
-        if(d2<11000){const dd=Math.sqrt(d2+1),f=(11000-d2)/11000*3.2;p.vx+=dx/dd*f;p.vy+=dy/dd*f;p.vz+=f*2.5}
+      if(act){
+        let x1=p.x*cy_-p.z*sy_,z1=p.x*sy_+p.z*cy_,y1=p.y*cr_-z1*sr_,z2=p.y*sr_+z1*cr_,f=FOV/(FOV+z2);
+        const dx=ox+x1*f-mx,dy=oy+y1*f-my,d2=dx*dx+dy*dy;
+        if(d2<11000){const dd=Math.sqrt(d2+1),k=(11000-d2)/11000*3.2;p.vx+=dx/dd*k;p.vy+=dy/dd*k;p.vz+=k*2.5}
         p.vx+=(p.tx-p.x)*.05;p.vy+=(p.ty-p.y)*.05;p.vz+=(p.tz-p.z)*.05;p.vx*=.84;p.vy*=.84;p.vz*=.84;p.x+=p.vx;p.y+=p.vy;p.z+=p.vz;
       }
-      const q=proj(p.x,p.y,p.z);if(q[2]<=0)continue;
-      const sz=(W<600?1.6:1.9)*q[2];cx.globalAlpha=Math.max(.6,Math.min(1,q[2]*q[2]));cx.fillStyle=p.c;cx.fillRect(q[0],q[1],sz,sz);
+      const x1=p.x*cy_-p.z*sy_,z1=p.x*sy_+p.z*cy_,y1=p.y*cr_-z1*sr_,z2=p.y*sr_+z1*cr_,f=FOV/(FOV+z2);if(f<=0)continue;
+      const sz=base*f;(paths[p.c]||(paths[p.c]=new Path2D())).rect(ox+x1*f,oy+y1*f,sz,sz);
     }
-    cx.globalAlpha=1;cx.globalCompositeOperation='source-over';
+    for(const c in paths){cx.fillStyle=c;cx.fill(paths[c])}
     orbit(t,true);
     if(!reduce&&root.dataset.view=='home')requestAnimationFrame(frame);
   };
