@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh" data-view="home">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASWEE</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%2220%2020%20160%20150%22%3E%3Cstyle%3Epath%7Bfill%3A%23000%7D%40media%28prefers-color-scheme%3Adark%29%7Bpath%7Bfill%3A%23fff%7D%7D%3C/style%3E%3Cpath%20transform%3D%22translate%28-3%2010%29%22%20d%3D%22M41%20150%20V117%20L34%2066%20L67.1%20117%20H86.5%20L100%2042%20L113.5%20117%20H132.9%20L166%2066%20L159%20117%20V150%20H131%20V134%20H114%20V150%20H86%20V134%20H69%20V150%20Z%20M32%2037%20L42%2049%20L32%2061%20L22%2049%20Z%20M100%2010%20L111%2024%20L100%2038%20L89%2024%20Z%20M168%2037%20L178%2049%20L168%2061%20L158%2049%20Z%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE personal space of a builder; quiet, precise, alive
+   IDEA a running system: the site behaves like a console you can poke
+   PICTURE live particle field that assembles the name and scatters under the cursor
+   COLOUR near-black ground, cool white ink, mint signal, electric blue support
+   TYPE Space Grotesk display + JetBrains Mono for system text + Noto Sans SC/JP
+   LAYOUT home is only the name field; lab, now, journal, ping are separate views */
+:root{color-scheme:dark;--bg:#07080c;--bg2:#0d0f16;--line:#1c2130;--ink:#e8ecf1;--mute:#8a93a6;--sig:#7cf2c9;--blue:#6b8cff;--warn:#ffb86b}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 "Noto Sans SC","Noto Sans JP",system-ui,sans-serif;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:radial-gradient(ellipse at 50% 0,#000 20%,transparent 75%)}
+html[data-lang=ja] body{font-family:"Noto Sans JP","Noto Sans SC",system-ui,sans-serif}
+html:not([data-lang=zh]) .zh,html:not([data-lang=ja]) .ja,html:not([data-lang=en]) .en{display:none}
+a{color:inherit}
+.mono{font-family:"Share Tech Mono",ui-monospace,monospace}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.band{position:relative;padding-block:clamp(48px,7vw,104px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+nav{position:fixed;top:0;left:0;right:0;z-index:5}
+html:not([data-view=home]) nav{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px)}
+.view{display:none;padding-top:64px;min-height:100svh}
+html[data-view=home] body::before{display:none}
+html[data-view=home] body{background:#05060a}
+html[data-view=home] #home,html[data-view=lab] #lab,html[data-view=now] #now,html[data-view=journal] #journal,html[data-view=ping] #ping{display:block}
+.links a[aria-current=page]{color:var(--ink)}
+nav .wrap{display:flex;align-items:center;gap:6px 22px;flex-wrap:wrap;padding:10px max(5vw,16px)}
+.logo{font:700 14px/1 Orbitron,sans-serif;letter-spacing:.12em;text-decoration:none;margin-right:auto;display:flex;align-items:center;gap:8px}
+.logo .mark{display:block;flex:none;color:var(--ink)}
+.logo:hover .mark{color:var(--sig)}
+.links{display:flex;gap:2px 20px;flex-wrap:wrap}
+.links a{text-decoration:none;color:var(--mute);font-size:14px;padding:8px 0}
+.links a:hover{color:var(--sig)}
+.lang{display:flex;border:1px solid var(--line);border-radius:8px;padding:3px}
+.lang button,.ctl button{font:500 13px "Share Tech Mono",monospace;color:var(--mute);background:none;border:0;border-radius:6px;padding:6px 10px;min-height:36px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+.hero{position:relative;height:100svh;min-height:480px;padding:0}
+.node{font:11px "Share Tech Mono",monospace;letter-spacing:.24em;color:#5d6577;margin-bottom:4px}
+.foot{position:absolute;left:0;right:0;bottom:0;padding-block:32px clamp(24px,6vh,56px)!important;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding:0 16px;text-align:center}
+.term{letter-spacing:.04em;max-width:min(92vw,760px);min-height:1.5em}
+.term .p{font-family:Orbitron,sans-serif;font-size:.8em;margin-right:6px}
+.cities{display:grid;grid-template-columns:repeat(8,minmax(0,auto));gap:6px 22px;width:calc(min(100vw,1240px) - 2*max(5vw,16px));justify-content:space-between;margin-top:18px;font-family:"Share Tech Mono",monospace;pointer-events:auto}
+.city{display:grid;gap:1px;text-align:left;padding-left:10px;border-left:1px solid var(--line)}
+.city small{font:500 10px/1.2 Orbitron,sans-serif;letter-spacing:.14em;color:var(--mute);display:flex;align-items:center;gap:6px}
+.city small i{width:5px;height:5px;border-radius:50%;background:var(--mute)}
+.city small i.d{background:var(--sig);box-shadow:0 0 6px var(--sig)}
+.city b{font-weight:400;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.city b sup{font-size:10px;color:var(--mute);margin-left:3px}
+.city.here b{color:var(--sig)}
+.city em{font:normal 11px "Share Tech Mono",monospace;color:var(--mute)}
+.city.here em{color:var(--sig)}
+@media(max-width:900px){.cities{grid-template-columns:repeat(4,minmax(0,auto))}}
+@media(max-width:600px){.cities{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}.city b{font-size:15px}}
+#field{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.term{font:400 clamp(15px,1.6vw,18px)/1.5 "Share Tech Mono",monospace}
+.term .p{color:var(--sig)}
+.caret{display:inline-block;width:.6em;height:1.1em;background:var(--sig);vertical-align:-.18em;margin-left:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+h2{font:700 clamp(30px,4vw,46px)/1.08 Orbitron,"Noto Sans SC","Noto Sans JP",sans-serif;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.head p{margin:0;color:var(--mute);max-width:34em}
+.tag{font:12px "Share Tech Mono",monospace;color:var(--sig)}
+.lab{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
+.stage{position:relative;min-height:360px;border-right:1px solid var(--line)}
+.stage svg{position:absolute;inset:0;width:100%;height:100%}
+.side{display:flex;flex-direction:column}
+.side .info{padding:20px;border-bottom:1px solid var(--line)}
+.side h3{margin:0 0 6px;font:600 20px/1.3 Orbitron,"Noto Sans SC",sans-serif}
+.side p{margin:0;color:var(--mute);font-size:15px}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--line)}
+.ctl button{border:1px solid var(--line);color:var(--ink);min-height:44px;padding:0 16px}
+.ctl button.go{background:var(--sig);border-color:var(--sig);color:#05120d}
+.ctl button:disabled{opacity:.4;cursor:default}
+.logbox{flex:1;min-height:180px;max-height:260px;overflow:auto;padding:14px 20px;font:13px/1.8 "Share Tech Mono",monospace;color:var(--mute)}
+.logbox .ok{color:var(--sig)}.logbox .no{color:var(--warn)}
+.works{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.w{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.w:hover{background:var(--bg2)}
+.w .id{display:flex;justify-content:space-between;font:12px "Share Tech Mono",monospace;color:var(--mute)}
+.w .id b{font-weight:400;color:var(--sig)}
+.w .id b.dev{color:var(--warn)}
+.w h3{margin:0;font:600 19px/1.35 Orbitron,"Noto Sans SC","Noto Sans JP",sans-serif}
+.w p{margin:0;color:var(--mute);font-size:15px}
+.w code{margin-top:auto;font:12px "Share Tech Mono",monospace;color:var(--blue)}
+.now{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.n{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--bg2)}
+.n .tag{display:block;margin-bottom:12px}
+.n h3{margin:0 0 8px;font-size:19px}
+.n p{margin:0;color:var(--mute);font-size:15px}
+.bar{height:6px;border-radius:3px;background:var(--line);margin-top:16px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--sig))}
+.barl{display:flex;justify-content:space-between;font:12px "Share Tech Mono",monospace;color:var(--mute);margin-top:6px}
+.journal{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.journal li{display:grid;grid-template-columns:8em minmax(0,1fr) auto;gap:4px 24px;padding:18px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.journal time{font:13px "Share Tech Mono",monospace;color:var(--mute);white-space:nowrap}
+.journal b{font-weight:500;font-size:17px}
+.journal span.c{font:12px "Share Tech Mono",monospace;color:var(--blue);white-space:nowrap}
+.journal p{grid-column:2/4;margin:0;color:var(--mute);font-size:15px}
+.ping .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:center}
+.cmd{border:1px solid var(--line);border-radius:14px;background:var(--bg2);font:14px/2 "Share Tech Mono",monospace;padding:18px 20px}
+.cmd div{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.cmd span{color:var(--mute)}
+.cmd a{color:var(--sig);overflow-wrap:anywhere}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+footer{padding:22px max(5vw,16px);font:12px "Share Tech Mono",monospace;color:var(--mute);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tilt{transform:perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px);transition:transform .25s ease-out,border-color .25s,box-shadow .25s;background-image:radial-gradient(420px circle at var(--mx,50%) var(--my,-50%),rgba(124,242,201,.10),transparent 45%)}
+.tilt.hot{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--tz,0px));border-color:color-mix(in srgb,var(--sig) 45%,var(--line));box-shadow:0 30px 60px -30px rgba(107,140,255,.45)}
+.tilt.hot{transform-style:preserve-3d}
+.tilt.hot h3,.tilt.hot .tag,.tilt.hot .id{transform:translateZ(28px)}
+h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0 14px 34px rgba(107,140,255,.35)}
+#warp{position:fixed;inset:0;z-index:20;pointer-events:none;visibility:hidden;display:grid;place-items:center;background:var(--bg)}
+#warp::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--sig);box-shadow:0 0 14px var(--sig);transform:scaleX(0)}
+#warp::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.5}
+#warp b{position:relative;z-index:1;font:400 clamp(16px,2vw,20px) "Share Tech Mono",monospace;letter-spacing:.2em;color:var(--sig);opacity:0}
+#warp.on{visibility:visible;animation:wbox .9s cubic-bezier(.7,0,.2,1) both}
+#warp.on::before{animation:wline .9s cubic-bezier(.7,0,.2,1) both}
+#warp.on b{animation:wtxt .9s both}
+@keyframes wbox{0%{clip-path:inset(50% 0 50% 0)}22%{clip-path:inset(50% 0 50% 0)}42%{clip-path:inset(0 0 0 0)}68%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 100% 0)}}
+@keyframes wline{0%{transform:scaleX(0);top:50%}22%{transform:scaleX(1);top:50%}42%{top:50%}68%{top:50%;opacity:1}100%{top:0;opacity:0;transform:scaleX(1)}}
+@keyframes wtxt{0%,35%{opacity:0}45%,70%{opacity:1}85%,100%{opacity:0}}
+.view .it{opacity:0}
+.view.enter .it{opacity:1;animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i) * 60ms)}
+@keyframes rise{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.view.enter .lab .stage,.view.enter .w,.view.enter .n,.view.enter .cmd{position:relative}
+.view.enter .scanin::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--sig) 22%,transparent) 50%,transparent);background-size:100% 40%;background-repeat:no-repeat;animation:sweep .9s ease-out both;animation-delay:calc(var(--i) * 60ms + .15s)}
+@keyframes sweep{from{background-position:0 -60%}to{background-position:0 160%;opacity:0}}
+@media(prefers-reduced-motion:reduce){.caret{animation:none}html{scroll-behavior:auto}#warp.on{visibility:hidden;animation:none}.view .it{opacity:1}.view.enter .it,.view.enter .scanin::after{animation:none}}
+@media(max-width:900px){.works,.now{grid-template-columns:repeat(2,minmax(0,1fr))}.now .n:last-child{grid-column:1/-1}}
+@media(max-width:720px){.lab,.ping .wrap{grid-template-columns:minmax(0,1fr)}.stage{border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:600px){.works,.now{grid-template-columns:minmax(0,1fr)}.links{order:3;width:100%;gap:2px 16px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#home" aria-label="ASWEE home"><svg class="mark" viewBox="20 20 160 150" width="26" height="24" aria-hidden="true"><path transform="translate(-3 10)" fill="currentColor" d="M41 150 V117 L34 66 L67.1 117 H86.5 L100 42 L113.5 117 H132.9 L166 66 L159 117 V150 H131 V134 H114 V150 H86 V134 H69 V150 Z M32 37 L42 49 L32 61 L22 49 Z M100 10 L111 24 L100 38 L89 24 Z M168 37 L178 49 L168 61 L158 49 Z"/></svg>ASWEE</a>
+  <div class="links">
+    <a href="#lab"><span class="zh">实验室</span><span class="ja">ラボ</span></a>
+    <a href="#now"><span class="zh">此刻</span><span class="ja">いま</span></a>
+    <a href="#journal"><span class="zh">日志</span><span class="ja">ログ</span></a>
+    <a href="#ping"><span class="zh">联系</span><span class="ja">連絡</span></a>
+  </div>
+  <div class="lang" role="group" aria-label="Language">
+    <button id="lzh" type="button" aria-pressed="true">中</button>
+    <button id="lja" type="button" aria-pressed="false">日</button>
+    <button id="len" type="button" aria-pressed="false">EN</button>
+  </div>
+</div></nav>
+
+<header class="view hero" id="home">
+  <h1 class="sr">ASWEE</h1>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="foot">
+    <div class="node">NODE//LUNA HARBOR</div>
+    <div class="term"><span class="p">›</span> <span id="typed"></span><span class="caret"></span></div>
+    <div class="cities" id="cities"></div>
+  </div>
+</header>
+
+<section class="view band" id="lab"><div class="wrap">
+  <div class="head"><div><span class="tag">/lab</span><h2><span class="zh">实验室</span><span class="ja">ラボ</span></h2></div></div>
+</div></section>
+
+<section class="view band" id="now"><div class="wrap">
+  <div class="head"><div><span class="tag">/now</span><h2><span class="zh">此刻</span><span class="ja">いま</span></h2></div></div>
+</div></section>
+
+<section class="view band" id="journal"><div class="wrap">
+  <div class="head"><div><span class="tag">/journal</span><h2><span class="zh">日志</span><span class="ja">ログ</span></h2></div></div>
+</div></section>
+
+<section class="view band" id="ping"><div class="wrap">
+  <div class="head"><div><span class="tag">/ping</span><h2><span class="zh">联系</span><span class="ja">連絡</span></h2></div></div>
+</div></section>
+
+<div id="warp" aria-hidden="true"><b></b></div>
+<footer class="view" id="ft" style="display:none"><span>© 2026 ASWEE</span><span>built with curiosity</span></footer>
+
+<script>
+{
+  const root=document.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const L=()=>root.dataset.lang;
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const EN={"实验室": "Lab", "此刻": "Now", "日志": "Journal", "联系": "Contact"};
+  const zj=(z,j,e)=>`<span class="zh">${z}</span><span class="ja">${j}</span><span class="en">${e||EN[z]||j}</span>`;
+  document.querySelectorAll('span.zh').forEach(z=>{const j=z.nextElementSibling;if(!j||!j.classList.contains('ja'))return;const e=document.createElement('span');e.className='en';e.textContent=EN[z.textContent]||j.textContent;j.after(e)});
+
+  /* 3D particle name field */
+  const cv=document.getElementById('field'),cx=cv.getContext('2d');
+  let W=0,H=0,dpr=1,pts=[],stars=[],mouse={x:-999,y:-999,on:false};
+  const cam={rx:0,ry:0},FOV=900;
+  const C1=[124,242,201],C2=[107,140,255],C3=[190,140,255];
+  const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+  const build=()=>{
+    W=cv.clientWidth;H=cv.clientHeight;if(!W||!H)return;dpr=Math.min(devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+    const o=document.createElement('canvas');o.width=W;o.height=H;const g=o.getContext('2d');
+    g.font='900 100px Orbitron,sans-serif';const tw=g.measureText('ASWEE').width;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);
+    g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
+    g.font=`900 ${big}px Orbitron,sans-serif`;g.fillText('ASWEE',W/2,H*.4);
+    const d=g.getImageData(0,0,W,H).data,step=W<600?2:3,t=[];
+    for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(d[(y*W+x)*4+3]>128)t.push([x,y]);
+    const dep=W<600?6:10;
+    pts=t.map(([x,y])=>{const c=Math.random()<.05?C1:[236,239,245];
+      return {tx:x-W/2,ty:y-H*.4,tz:(Math.random()-.5)*dep,x:(Math.random()-.5)*W*1.6,y:(Math.random()-.5)*H*1.4,z:(Math.random()-.5)*1400,vx:0,vy:0,vz:0,c:`rgb(${c})`}});
+    if(reduce)pts.forEach(p=>{p.x=p.tx;p.y=p.ty;p.z=p.tz});
+    stars=[...Array(W<600?140:260)].map(()=>({x:Math.random()*2-1,y:Math.random()*2-1,z:Math.random()}));
+  };
+  const proj=(x,y,z)=>{const cy=Math.cos(cam.ry),sy=Math.sin(cam.ry),cr=Math.cos(cam.rx),sr=Math.sin(cam.rx);
+    const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cr-z1*sr,z2=y*sr+z1*cr,f=FOV/(FOV+z2);return [W/2+x1*f,H*.4+y1*f,f,z2]};
+  const orbit=(t,front)=>{
+    const R=Math.min(W*.36,FOV*.42),rings=[[.3,1,'232,236,241']];
+    cx.lineWidth=1.2;
+    rings.forEach(([tilt,spd,col],ri)=>{
+      const n=160,ph=reduce?0:t*.00018*spd;
+      for(let i=0;i<n;i+=2){
+        const a0=i/n*Math.PI*2+ph,a1=(i+1)/n*Math.PI*2+ph;
+        const P=a=>{const x=R*Math.cos(a),z0=R*Math.sin(a);return proj(x,z0*Math.sin(tilt),z0*Math.cos(tilt))};
+        const p0=P(a0),p1=P(a1);if((p0[3]<0)!==front)continue;
+        cx.strokeStyle=`rgba(${col},${front?.28:.08})`;cx.beginPath();cx.moveTo(p0[0],p0[1]);cx.lineTo(p1[0],p1[1]);cx.stroke();
+      }
+      const sa=(reduce?1:t*.0006*spd)+ri*2,x=R*Math.cos(sa),z0=R*Math.sin(sa),s=proj(x,z0*Math.sin(tilt),z0*Math.cos(tilt));
+      if((s[3]<0)===front){cx.fillStyle=`rgb(${col})`;cx.shadowColor=`rgb(${col})`;cx.shadowBlur=14;cx.beginPath();cx.arc(s[0],s[1],3.2*s[2],0,7);cx.fill();cx.shadowBlur=0}
+    });
+  };
+  const bg=t=>{
+    const vx=W/2-cam.ry*W*.4,vy=H*.42+cam.rx*H*.4;
+    const g=cx.createRadialGradient(vx,vy,0,vx,vy,Math.max(W,H)*.6);
+    g.addColorStop(0,'rgba(120,140,200,.10)');g.addColorStop(1,'rgba(5,6,10,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+    for(const s of stars){
+      if(!reduce){s.z-=.0005;if(s.z<.04){s.z=1;s.x=Math.random()*2-1;s.y=Math.random()*2-1}}
+      const k=1-s.z,px=W/2+s.x/s.z*W*.2-cam.ry*k*140,py=H*.45+s.y/s.z*H*.2+cam.rx*k*140;
+      if(px<0||px>W||py<0||py>H)continue;
+      cx.fillStyle=`rgba(232,236,241,${(.08+k*.6).toFixed(2)})`;cx.fillRect(px,py,.6+k*1.4,.6+k*1.4);
+    }
+  };
+  const frame=(t=0)=>{
+    if(!W)return requestAnimationFrame(frame);
+    const try_=mouse.on?(mouse.x/W-.5)*.4:0,trx=mouse.on?-(mouse.y/H-.5)*.2:0;
+    if(!reduce){cam.ry+=(try_-cam.ry)*.05;cam.rx+=(trx-cam.rx)*.05}
+    cx.clearRect(0,0,W,H);bg(t);orbit(t,false);
+    cx.globalCompositeOperation='lighter';
+    for(const p of pts){
+      if(!reduce){
+        const q=proj(p.x,p.y,p.z),dx=q[0]-mouse.x,dy=q[1]-mouse.y,d2=dx*dx+dy*dy;
+        if(d2<11000){const dd=Math.sqrt(d2+1),f=(11000-d2)/11000*3.2;p.vx+=dx/dd*f;p.vy+=dy/dd*f;p.vz+=f*2.5}
+        p.vx+=(p.tx-p.x)*.05;p.vy+=(p.ty-p.y)*.05;p.vz+=(p.tz-p.z)*.05;p.vx*=.84;p.vy*=.84;p.vz*=.84;p.x+=p.vx;p.y+=p.vy;p.z+=p.vz;
+      }
+      const q=proj(p.x,p.y,p.z);if(q[2]<=0)continue;
+      const sz=(W<600?1.6:1.9)*q[2];cx.globalAlpha=Math.max(.6,Math.min(1,q[2]*q[2]));cx.fillStyle=p.c;cx.fillRect(q[0],q[1],sz,sz);
+    }
+    cx.globalAlpha=1;cx.globalCompositeOperation='source-over';
+    orbit(t,true);
+    if(!reduce&&root.dataset.view=='home')requestAnimationFrame(frame);
+  };
+  const ro=new ResizeObserver(()=>{build();if(reduce)frame()});
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{ro.observe(cv);if(!reduce)requestAnimationFrame(frame)});
+  cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;mouse.on=true});
+  cv.addEventListener('pointerleave',()=>{mouse.x=mouse.y=-999;mouse.on=false});
+  cv.addEventListener('click',()=>{pts.forEach(p=>{p.vx+=(Math.random()-.5)*60;p.vy+=(Math.random()-.5)*60;p.vz+=(Math.random()-.3)*160})});
+
+  /* decode line */
+  const lines={zh:['「我思故我在」— 笛卡尔','「未经审视的人生不值得过」— 苏格拉底','「我唯一知道的，就是我一无所知」— 苏格拉底','「人不能两次踏进同一条河流」— 赫拉克利特','「知识就是力量」— 培根','「人是一根会思考的芦苇」— 帕斯卡','「我之所以看得更远，是因为站在巨人的肩膀上」— 牛顿','「给我一个支点，我就能撬动地球」— 阿基米德','「上帝不掷骰子」— 爱因斯坦','「我们必须知道，我们终将知道」— 希尔伯特','「机器能思考吗？」— 图灵','「学而不思则罔，思而不学则殆」— 孔子','「道可道，非常道」— 老子','「凡不可说的，应当保持沉默」— 维特根斯坦'],ja:['「我思う、ゆえに我あり」— デカルト','「吟味なき人生は生きるに値しない」— ソクラテス','「私が知っているのは、何も知らないということだけだ」— ソクラテス','「同じ川に二度入ることはできない」— ヘラクレイトス','「知識は力なり」— ベーコン','「人間は考える葦である」— パスカル','「私が遠くを見渡せたのは、巨人の肩の上に立っていたからだ」— ニュートン','「我に支点を与えよ、さらば地球を動かさん」— アルキメデス','「神はサイコロを振らない」— アインシュタイン','「我々は知らねばならない、我々は知るだろう」— ヒルベルト','「機械は考えることができるか？」— チューリング','「学びて思わざれば則ち罔し、思いて学ばざれば則ち殆し」— 孔子','「道の道とすべきは、常の道に非ず」— 老子','「語りえぬものについては、沈黙しなければならない」— ウィトゲンシュタイン'],en:["“I think, therefore I am.” — Descartes", "“The unexamined life is not worth living.” — Socrates", "“I know that I know nothing.” — Socrates", "“No man ever steps in the same river twice.” — Heraclitus", "“Knowledge is power.” — Bacon", "“Man is a thinking reed.” — Pascal", "“If I have seen further, it is by standing on the shoulders of giants.” — Newton", "“Give me a place to stand, and I will move the Earth.” — Archimedes", "“God does not play dice.” — Einstein", "“We must know. We will know.” — Hilbert", "“Can machines think?” — Turing", "“Learning without thought is labour lost; thought without learning is perilous.” — Confucius", "“The Tao that can be told is not the eternal Tao.” — Laozi", "“Whereof one cannot speak, thereof one must be silent.” — Wittgenstein"]};
+  const GL='ΣΔΨΩλπ∑∆◊#$%&@*+=<>/\\|:;01ABCDEFXZ⌁⌖⏚⟁';
+  const ty=document.getElementById('typed');let li=Math.floor(Math.random()*14);
+  const rg=()=>GL[Math.floor(Math.random()*GL.length)];
+  const decode=()=>{const s=lines[L()][li%lines[L()].length];if(reduce){ty.textContent=s;return}
+    let f=0;const lock=[...s].map((c,i)=>i*1.6+Math.random()*8);
+    const go=()=>{f++;let out='',all=true;[...s].forEach((c,i)=>{if(c==' '||f>lock[i])out+=c;else{all=false;out+=f>lock[i]-14?rg():''}});ty.textContent=out;
+      if(!all)return setTimeout(go,38);
+      setTimeout(()=>{let k=0;const out2=()=>{k++;ty.textContent=[...s].slice(0,Math.max(0,s.length-k*2)).map(c=>c==' '?c:(Math.random()<.6?rg():c)).join('');if(k*2<s.length)setTimeout(out2,30);else{li++;setTimeout(decode,250)}};out2()},2600+s.length*90)};
+    go()};
+  decode();
+
+  /* solar system clocks: local time at each planet's prime meridian, from its mean solar day */
+  const PL=[['MERCURY',175.9408],['VENUS',116.75,1],['EARTH',1],['MARS',1.0274912517],['JUPITER',0.41354],['SATURN',0.44009],['URANUS',0.71833,1],['NEPTUNE',0.67125]];
+  let vtz='UTC';try{vtz=Intl.DateTimeFormat().resolvedOptions().timeZone||vtz}catch(e){}
+  const cel=document.getElementById('cities');
+  const dlen=d=>d>=2?d.toFixed(1)+' d':Math.floor(d*24)+'h '+String(Math.round(d*1440%60)).padStart(2,'0')+'m';
+  cel.innerHTML=PL.map(p=>`<div class="city${p[0]=='EARTH'?' here':''}"><small><i></i>${p[0]}</small><b>--:--:--</b><em>${p[0]=='EARTH'?'you are here':p[0]=='MARS'?'MTC · '+dlen(p[1]):(p[2]?'↺ ':'')+'1 day = '+dlen(p[1])}</em></div>`).join('');
+  const cb=[...cel.querySelectorAll('b')],cd=[...cel.querySelectorAll('i')];
+  const hms=f=>{const s=Math.floor(f*86400);return [s/3600|0,(s%3600)/60|0,s%60].map(v=>String(v).padStart(2,'0')).join(':')};
+  const clk=()=>{const now=Date.now(),jd=now/86400000+2440587.5,jdtt=jd+69.184/86400;
+    PL.forEach((p,i)=>{let f;
+      if(p[0]=='EARTH'){const t=new Date(now).toLocaleTimeString('en-GB',{timeZone:vtz,hour12:false});const[h,m,s2]=t.split(':').map(Number);f=(h*3600+m*60+s2)/86400}
+      else if(p[0]=='MARS'){const msd=(jdtt-2405522.0028779)/1.0274912517;f=((msd%1)+1)%1}
+      else{const k=(jdtt-2451545)/p[1];f=p[2]?(((-k)%1)+1)%1:((k%1)+1)%1}
+      cb[i].textContent=hms(f);cd[i].className=f>=.25&&f<.75?'d':''})};
+  clk();setInterval(clk,1000);
+
+  /* 3D card tilt */
+  if(matchMedia('(hover:hover)').matches&&!reduce){
+    const TS='.w,.n,.cmd';
+    const bind=()=>document.querySelectorAll(TS).forEach(el=>{if(el.dataset.tb)return;el.dataset.tb=1;el.classList.add('tilt');
+      el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),u=(e.clientX-r.left)/r.width,v=(e.clientY-r.top)/r.height;
+        el.style.setProperty('--ry',((u-.5)*10).toFixed(2)+'deg');el.style.setProperty('--rx',(-(v-.5)*10).toFixed(2)+'deg');el.style.setProperty('--tz','14px');
+        el.style.setProperty('--mx',(u*100).toFixed(1)+'%');el.style.setProperty('--my',(v*100).toFixed(1)+'%');el.classList.add('hot')});
+      el.addEventListener('pointerleave',()=>{['--rx','--ry','--tz','--mx','--my'].forEach(k=>el.style.removeProperty(k));el.classList.remove('hot')})});
+    bind();
+  }
+
+  /* router */
+  const views=['home','lab','now','journal','ping'];
+  const route=()=>{const h=location.hash.slice(1),v=views.includes(h)?h:'home';root.dataset.view=v;
+    document.querySelectorAll('.links a').forEach(a=>a.getAttribute('href')=='#'+v?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+    window.scrollTo(0,0);requestAnimationFrame(()=>{build();if(v=='home')requestAnimationFrame(frame)})};
+  const scr=(el,txt,ms)=>{if(reduce){el.textContent=txt;return}let f=0;const n=[...txt],lk=n.map((c,i)=>i*1.2+Math.random()*6);const go=()=>{f++;let ok=true;el.textContent=n.map((c,i)=>c==' '||f>lk[i]?c:(ok=false,rg())).join('');if(!ok)setTimeout(go,ms||30)};go()};
+  const SEL='.head,.lab,.w,.n,.journal li,.ping .wrap>div';
+  const enter=v=>{
+    const sec=document.getElementById(v);if(!sec)return;
+    sec.classList.remove('enter');
+    sec.querySelectorAll(SEL).forEach((el,i)=>{el.classList.add('it');if(el.matches('.lab,.w,.n,.ping .wrap>div:last-child'))el.classList.add('scanin');el.style.setProperty('--i',i)});
+    const wb=warp.querySelector('b');warp.classList.remove('on');void warp.offsetWidth;
+    if(!reduce){warp.classList.add('on');scr(wb,'/'+v.toUpperCase()+'  //  LINKING',28)}
+    setTimeout(()=>{sec.classList.add('enter');sec.querySelectorAll('.head h2 > span, .head .tag').forEach(el=>{if(el.offsetParent!==null||el.classList.contains('tag')){const t=el.dataset.t||(el.dataset.t=el.textContent);scr(el,t,34)}})},reduce?0:560);
+  };
+  const warp=document.getElementById('warp');
+  addEventListener('hashchange',()=>{route();if(root.dataset.view!='home')enter(root.dataset.view)});
+  route();if(root.dataset.view!='home')enter(root.dataset.view);
+
+  /* language */
+  const LB={zh:document.getElementById('lzh'),ja:document.getElementById('lja'),en:document.getElementById('len')};
+  const set=l=>{root.dataset.lang=l;root.lang=l;for(const k in LB)LB[k].setAttribute('aria-pressed',k==l);try{localStorage.setItem('lang',l)}catch(e){}};
+  for(const k in LB)LB[k].addEventListener('click',()=>set(k));
+  try{const sl=localStorage.getItem('lang');if(sl=='ja'||sl=='en')set(sl)}catch(e){}
+}
+</script>
+</body>
+</html>
