@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ASWEE</title>
+<title>LUNAREX</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%2220%2020%20160%20150%22%3E%3Cstyle%3Epath%7Bfill%3A%23000%7D%40media%28prefers-color-scheme%3Adark%29%7Bpath%7Bfill%3A%23fff%7D%7D%3C/style%3E%3Cpath%20transform%3D%22translate%28-3%2010%29%22%20d%3D%22M41%20150%20V117%20L34%2066%20L67.1%20117%20H86.5%20L100%2042%20L113.5%20117%20H132.9%20L166%2066%20L159%20117%20V150%20H131%20V134%20H114%20V150%20H86%20V134%20H69%20V150%20Z%20M32%2037%20L42%2049%20L32%2061%20L22%2049%20Z%20M100%2010%20L111%2024%20L100%2038%20L89%2024%20Z%20M168%2037%20L178%2049%20L168%2061%20L158%2049%20Z%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -142,7 +142,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 </head>
 <body>
 <nav><div class="wrap">
-  <a class="logo" href="#home" aria-label="ASWEE home"><svg class="mark" viewBox="20 20 160 150" width="26" height="24" aria-hidden="true"><path transform="translate(-3 10)" fill="currentColor" d="M41 150 V117 L34 66 L67.1 117 H86.5 L100 42 L113.5 117 H132.9 L166 66 L159 117 V150 H131 V134 H114 V150 H86 V134 H69 V150 Z M32 37 L42 49 L32 61 L22 49 Z M100 10 L111 24 L100 38 L89 24 Z M168 37 L178 49 L168 61 L158 49 Z"/></svg>ASWEE</a>
+  <a class="logo" href="#home" aria-label="LUNAREX home"><svg class="mark" viewBox="20 20 160 150" width="26" height="24" aria-hidden="true"><path transform="translate(-3 10)" fill="currentColor" d="M41 150 V117 L34 66 L67.1 117 H86.5 L100 42 L113.5 117 H132.9 L166 66 L159 117 V150 H131 V134 H114 V150 H86 V134 H69 V150 Z M32 37 L42 49 L32 61 L22 49 Z M100 10 L111 24 L100 38 L89 24 Z M168 37 L178 49 L168 61 L158 49 Z"/></svg>LUNAREX</a>
   <div class="links">
     <a href="#lab"><span class="zh">实验室</span><span class="ja">ラボ</span></a>
     <a href="#now"><span class="zh">此刻</span><span class="ja">いま</span></a>
@@ -157,7 +157,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 </div></nav>
 
 <header class="view hero" id="home">
-  <h1 class="sr">ASWEE</h1>
+  <h1 class="sr">LUNAREX</h1>
   <canvas id="field" aria-hidden="true"></canvas>
   <div class="foot">
     <div class="node">NODE//LUNA HARBOR</div>
@@ -183,7 +183,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 </div></section>
 
 <div id="warp" aria-hidden="true"><b></b></div>
-<footer class="view" id="ft" style="display:none"><span>© 2026 ASWEE</span><span>built with curiosity</span></footer>
+<footer class="view" id="ft" style="display:none"><span>© 2026 LUNAREX</span><span>built with curiosity</span></footer>
 
 <script>
 {
@@ -203,9 +203,9 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
   const build=()=>{
     W=cv.clientWidth;H=cv.clientHeight;if(!W||!H)return;dpr=Math.min(devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
     const o=document.createElement('canvas');o.width=W;o.height=H;const g=o.getContext('2d');
-    g.font='900 100px Orbitron,sans-serif';const tw=g.measureText('ASWEE').width;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);
+    g.font='900 100px Orbitron,sans-serif';const tw=g.measureText('LUNAREX').width;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);
     g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
-    g.font=`900 ${big}px Orbitron,sans-serif`;g.fillText('ASWEE',W/2,H*.4);
+    g.font=`900 ${big}px Orbitron,sans-serif`;g.fillText('LUNAREX',W/2,H*.4);
     const d=g.getImageData(0,0,W,H).data,step=W<600?2:3,t=[];
     for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(d[(y*W+x)*4+3]>128)t.push([x,y]);
     const dep=W<600?6:10;
