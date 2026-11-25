@@ -1,3 +1,3 @@
 # COSMOREX
 
-https://aswee212.github.io
+https://cosmo-rex.github.io
