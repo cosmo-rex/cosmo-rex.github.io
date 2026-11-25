@@ -134,7 +134,9 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 .view.enter .lab .stage,.view.enter .w,.view.enter .n,.view.enter .cmd{position:relative}
 .view.enter .scanin::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--sig) 22%,transparent) 50%,transparent);background-size:100% 40%;background-repeat:no-repeat;animation:sweep .9s ease-out both;animation-delay:calc(var(--i) * 60ms + .15s)}
 @keyframes sweep{from{background-position:0 -60%}to{background-position:0 160%;opacity:0}}
-@media(prefers-reduced-motion:reduce){.caret{animation:none}html{scroll-behavior:auto}#warp.on{visibility:hidden;animation:none}.view .it{opacity:1}.view.enter .it,.view.enter .scanin::after{animation:none}}
+.logo .mark.flash{animation:gemflash 1.2s ease}
+@keyframes gemflash{0%,100%{color:var(--ink);filter:none}25%,60%{color:var(--sig);filter:drop-shadow(0 0 8px var(--sig))}}
+@media(prefers-reduced-motion:reduce){.logo .mark.flash{animation:none}.caret{animation:none}html{scroll-behavior:auto}#warp.on{visibility:hidden;animation:none}.view .it{opacity:1}.view.enter .it,.view.enter .scanin::after{animation:none}}
 @media(max-width:900px){.works,.now{grid-template-columns:repeat(2,minmax(0,1fr))}.now .n:last-child{grid-column:1/-1}}
 @media(max-width:720px){.lab,.ping .wrap{grid-template-columns:minmax(0,1fr)}.stage{border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:600px){.works,.now{grid-template-columns:minmax(0,1fr)}.links{order:3;width:100%;gap:2px 16px}}
@@ -196,7 +198,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 
   /* 3D particle name field */
   const cv=document.getElementById('field'),cx=cv.getContext('2d');
-  let W=0,H=0,dpr=1,OY=0,pts=[],stars=[],mouse={x:-999,y:-999,on:false};
+  let warpUntil=0,W=0,H=0,dpr=1,OY=0,pts=[],stars=[],mouse={x:-999,y:-999,on:false};
   const cam={rx:0,ry:0},FOV=900;
   const C1=[124,242,201],C2=[107,140,255],C3=[190,140,255];
   const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
@@ -236,10 +238,12 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
     const g=cx.createRadialGradient(vx,vy,0,vx,vy,Math.max(W,H)*.6);
     g.addColorStop(0,'rgba(120,140,200,.10)');g.addColorStop(1,'rgba(5,6,10,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);
     for(const s of stars){
-      if(!reduce){s.z-=.0005;if(s.z<.04){s.z=1;s.x=Math.random()*2-1;s.y=Math.random()*2-1}}
+      const wp=performance.now()<warpUntil,sp=wp?.014:.0005;
+      if(!reduce){s.z-=sp;if(s.z<.04){s.z=1;s.x=Math.random()*2-1;s.y=Math.random()*2-1}}
       const k=1-s.z,px=W/2+s.x/s.z*W*.2-cam.ry*k*140,py=H*.45+s.y/s.z*H*.2+cam.rx*k*140;
       if(px<0||px>W||py<0||py>H)continue;
-      cx.fillStyle=`rgba(232,236,241,${(.08+k*.6).toFixed(2)})`;cx.fillRect(px,py,.6+k*1.4,.6+k*1.4);
+      if(wp){const z2=Math.min(1,s.z+.06),qx=W/2+s.x/z2*W*.2,qy=H*.45+s.y/z2*H*.2;cx.strokeStyle=`rgba(200,240,230,${(.2+k*.7).toFixed(2)})`;cx.lineWidth=.6+k*1.6;cx.beginPath();cx.moveTo(qx,qy);cx.lineTo(px,py);cx.stroke()}
+      else{cx.fillStyle=`rgba(232,236,241,${(.08+k*.6).toFixed(2)})`;cx.fillRect(px,py,.6+k*1.4,.6+k*1.4)}
     }
   };
   const frame=(t=0)=>{
@@ -274,12 +278,22 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
   const GL='ΣΔΨΩλπ∑∆◊#$%&@*+=<>/\\|:;01ABCDEFXZ⌁⌖⏚⟁';
   const ty=document.getElementById('typed');let li=Math.floor(Math.random()*14);
   const rg=()=>GL[Math.floor(Math.random()*GL.length)];
-  const decode=()=>{const s=lines[L()][li%lines[L()].length];if(reduce){ty.textContent=s;return}
+  let gen=0,special=null;
+  const decode=(g=gen)=>{if(g!==gen)return;let s,sp=false;
+    if(special){s=special[L()]||special.en;special=null;sp=true}else s=lines[L()][li%lines[L()].length];
+    if(reduce){ty.textContent=s;if(sp)setTimeout(()=>decode(g),5000);return}
     let f=0;const lock=[...s].map((c,i)=>i*1.6+Math.random()*8);
-    const go=()=>{f++;let out='',all=true;[...s].forEach((c,i)=>{if(c==' '||f>lock[i])out+=c;else{all=false;out+=f>lock[i]-14?rg():''}});ty.textContent=out;
+    const go=()=>{if(g!==gen)return;f++;let out='',all=true;[...s].forEach((c,i)=>{if(c==' '||f>lock[i])out+=c;else{all=false;out+=f>lock[i]-14?rg():''}});ty.textContent=out;
       if(!all)return setTimeout(go,38);
-      setTimeout(()=>{let k=0;const out2=()=>{k++;ty.textContent=[...s].slice(0,Math.max(0,s.length-k*2)).map(c=>c==' '?c:(Math.random()<.6?rg():c)).join('');if(k*2<s.length)setTimeout(out2,30);else{li++;setTimeout(decode,250)}};out2()},2600+s.length*90)};
+      setTimeout(()=>{if(g!==gen)return;let k=0;const out2=()=>{if(g!==gen)return;k++;ty.textContent=[...s].slice(0,Math.max(0,s.length-k*2)).map(c=>c==' '?c:(Math.random()<.6?rg():c)).join('');if(k*2<s.length)setTimeout(out2,30);else{if(!sp)li++;setTimeout(()=>decode(g),250)}};out2()},sp?4200:2600+s.length*90)};
     go()};
+  const say=o=>{special=o;gen++;decode(gen)};
+  const EGG={
+    night:{zh:'「宇宙之王也需要睡觉。」— COSMOREX',ja:'「宇宙の王にも睡眠は必要だ。」— COSMOREX',en:'“Even the King of the Cosmos needs sleep.” — COSMOREX'},
+    crown:{zh:'「你发现了王冠。」— COSMOREX',ja:'「王冠を見つけたね。」— COSMOREX',en:'“You found the crown.” — COSMOREX'},
+    warp:{zh:'SOL-3 → 曲速航行中…',ja:'SOL-3 → ワープ航行中…',en:'SOL-3 → engaging warp drive…'},
+    secret:{zh:'「王冠之下，三颗宝石，一个名字。」— COSMOREX',ja:'「王冠の下に、三つの宝石と一つの名。」— COSMOREX',en:'“Beneath the crown: three gems, one name.” — COSMOREX'}};
+  if(new Date().getHours()<4)special=EGG.night;
   decode();
 
   /* solar system clocks: local time at each planet's prime meridian, from its mean solar day */
@@ -307,6 +321,36 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
         el.style.setProperty('--mx',(u*100).toFixed(1)+'%');el.style.setProperty('--my',(v*100).toFixed(1)+'%');el.classList.add('hot')});
       el.addEventListener('pointerleave',()=>{['--rx','--ry','--tz','--mx','--my'].forEach(k=>el.style.removeProperty(k));el.classList.remove('hot')})});
     bind();
+  }
+
+  /* easter eggs */
+  {
+    const crownMorph=()=>{
+      if(!W||!pts.length)return;
+      const o=document.createElement('canvas');o.width=W;o.height=H;const g=o.getContext('2d');
+      const d=document.querySelector('.logo .mark path').getAttribute('d'),sz=Math.min(H*.5,W*.55)/150;
+      g.translate(W/2-97*sz,OY-95*sz);g.scale(sz,sz);g.translate(-3,10);g.fillStyle='#fff';g.fill(new Path2D(d));
+      const px=g.getImageData(0,0,W,H).data;let step=2,t=[];
+      for(;;){t=[];for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(px[(y*W+x)*4+3]>128)t.push([x,y]);if(t.length<=pts.length||step>=10)break;step++}
+      if(!t.length)return;
+      pts.forEach((p,i)=>{p.ox=p.ox??p.tx;p.oy=p.oy??p.ty;const q=t[i%t.length];p.tx=q[0]-W/2+(Math.random()-.5)*step;p.ty=q[1]-OY+(Math.random()-.5)*step;p.vz+=(Math.random()-.5)*120});
+      say(EGG.crown);
+      clearTimeout(crownMorph.t);crownMorph.t=setTimeout(()=>{pts.forEach(p=>{if(p.ox!=null){p.tx=p.ox;p.ty=p.oy;p.ox=p.oy=null}})},6500);
+    };
+    const KON=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let ki=0,buf='';
+    addEventListener('keydown',e=>{
+      if(e.target.closest&&e.target.closest('input,textarea,[contenteditable]'))return;
+      const k=e.key.length==1?e.key.toLowerCase():e.key;
+      ki=(k===KON[ki])?ki+1:(k===KON[0]?1:0);
+      if(ki===KON.length){ki=0;if(root.dataset.view!=='home')location.hash='home';setTimeout(crownMorph,root.dataset.view==='home'?0:400)}
+      if(k.length==1){buf=(buf+k).slice(-8);if(/(sol3|cosmos)$/.test(buf)&&root.dataset.view==='home'){buf='';warpUntil=performance.now()+3500;say(EGG.warp)}}
+    });
+    let lc=[];const mk=document.querySelector('.logo .mark');
+    document.querySelector('.logo').addEventListener('click',()=>{const n=performance.now();lc=lc.filter(t=>n-t<1600);lc.push(n);
+      if(lc.length>=5){lc=[];mk.classList.remove('flash');void mk.getBoundingClientRect();mk.classList.add('flash');setTimeout(()=>{if(root.dataset.view==='home')say(EGG.secret)},450)}});
+    try{console.log('%c\n      ◆        ◆        ◆\n      █▄      ███      ▄█\n      ███▄  ███████  ▄███\n    ███████████████████████\n      ███     ███     ███\n','color:#7cf2c9;font-family:monospace;font-size:13px;line-height:1.15');
+      console.log('%c你找到了宇宙之王的密室。\nYou found the hidden chamber of COSMOREX.','color:#eef1f6;font:600 14px sans-serif');
+      console.log('%c提示 / Hint：↑ ↑ ↓ ↓ ← → ← → B A ；或在首页输入 sol3 / Type “sol3” on the home page.','color:#8a93a6;font:12px monospace')}catch(e){}
   }
 
   /* router */
