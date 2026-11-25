@@ -132,6 +132,8 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 .view.enter .it{opacity:1;animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i) * 60ms)}
 @keyframes rise{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 .view.enter .lab .stage,.view.enter .w,.view.enter .n,.view.enter .cmd{position:relative}
+#ping .lead{margin:0 0 22px;color:var(--mute);max-width:36em}
+#ping .contact{max-width:560px}
 .view.enter .scanin::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--sig) 22%,transparent) 50%,transparent);background-size:100% 40%;background-repeat:no-repeat;animation:sweep .9s ease-out both;animation-delay:calc(var(--i) * 60ms + .15s)}
 @keyframes sweep{from{background-position:0 -60%}to{background-position:0 160%;opacity:0}}
 .logo .mark.flash{animation:gemflash 1.2s ease}
@@ -191,6 +193,10 @@ html.cc .cur.on{opacity:1}
 
 <section class="view band" id="ping"><div class="wrap">
   <div class="head"><div><span class="tag">/ping</span><h2><span class="zh">联系</span><span class="ja">連絡</span></h2></div></div>
+  <p class="lead"><span class="zh">聊 AI、技术，或者任何有意思的东西。中文、日语、英语都可以。</span><span class="ja">AI や技術、面白いことなら何でも。日本語・中国語・英語で大丈夫です。</span><span class="en">Talk to me about AI, tech, or anything interesting. Chinese, Japanese or English.</span></p>
+  <div class="cmd contact">
+    <div><span>github</span><a href="https://github.com/cosmo-rex" target="_blank" rel="noopener">github.com/cosmo-rex</a></div>
+  </div>
 </div></section>
 
 <div class="cur" id="cur-ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="arc" cx="20" cy="20" r="15" fill="none" stroke="rgba(232,236,241,.45)" stroke-width="1"/></svg></div>
