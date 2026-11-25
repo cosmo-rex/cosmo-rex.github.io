@@ -196,26 +196,26 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
 
   /* 3D particle name field */
   const cv=document.getElementById('field'),cx=cv.getContext('2d');
-  let W=0,H=0,dpr=1,pts=[],stars=[],mouse={x:-999,y:-999,on:false};
+  let W=0,H=0,dpr=1,OY=0,pts=[],stars=[],mouse={x:-999,y:-999,on:false};
   const cam={rx:0,ry:0},FOV=900;
   const C1=[124,242,201],C2=[107,140,255],C3=[190,140,255];
   const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
   const build=()=>{
     W=cv.clientWidth;H=cv.clientHeight;if(!W||!H)return;dpr=Math.min(devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
     const o=document.createElement('canvas');o.width=W;o.height=H;const g=o.getContext('2d');
-    g.font='900 100px Orbitron,sans-serif';const tw=g.measureText('COSMOREX').width;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);
+    g.font='900 100px Orbitron,sans-serif';const mm=g.measureText('COSMOREX'),tw=mm.actualBoundingBoxLeft+mm.actualBoundingBoxRight;const lg=document.querySelector('.logo').getBoundingClientRect(),la=document.querySelector('.lang').getBoundingClientRect(),cw=(la.right-lg.left)>100?la.right-lg.left:W*.84;const big=Math.min(100*cw/tw,H*.32);const nb=document.querySelector('nav').getBoundingClientRect().bottom,ft=document.querySelector('.node').getBoundingClientRect().top,cr=cv.getBoundingClientRect().top;OY=(ft>nb?(nb+ft)/2:H*.4)-cr;
     g.fillStyle='#fff';g.textAlign='center';g.textBaseline='middle';
-    g.font=`900 ${big}px Orbitron,sans-serif`;g.fillText('COSMOREX',W/2,H*.4);
+    g.font=`900 ${big}px Orbitron,sans-serif`;g.textBaseline='alphabetic';g.textAlign='left';const m2=g.measureText('COSMOREX'),hh=m2.actualBoundingBoxAscent-m2.actualBoundingBoxDescent;g.fillText('COSMOREX',W/2-(m2.actualBoundingBoxRight-m2.actualBoundingBoxLeft)/2,OY+hh/2);
     const d=g.getImageData(0,0,W,H).data;let step=W<600?2:3,t=[];const MAXP=W<600?3500:7000;
     for(;;){t=[];for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(d[(y*W+x)*4+3]>128)t.push([x,y]);if(t.length<=MAXP||step>=8)break;step++}
     const dep=W<600?6:10;
     pts=t.map(([x,y])=>{const c=Math.random()<.05?C1:[236,239,245];
-      return {tx:x-W/2,ty:y-H*.4,tz:(Math.random()-.5)*dep,x:(Math.random()-.5)*W*1.6,y:(Math.random()-.5)*H*1.4,z:(Math.random()-.5)*1400,vx:0,vy:0,vz:0,c:`rgb(${c})`}});
+      return {tx:x-W/2,ty:y-OY,tz:(Math.random()-.5)*dep,x:(Math.random()-.5)*W*1.6,y:(Math.random()-.5)*H*1.4,z:(Math.random()-.5)*1400,vx:0,vy:0,vz:0,c:`rgb(${c})`}});
     if(reduce)pts.forEach(p=>{p.x=p.tx;p.y=p.ty;p.z=p.tz});
     stars=[...Array(W<600?140:260)].map(()=>({x:Math.random()*2-1,y:Math.random()*2-1,z:Math.random()}));
   };
   const proj=(x,y,z)=>{const cy=Math.cos(cam.ry),sy=Math.sin(cam.ry),cr=Math.cos(cam.rx),sr=Math.sin(cam.rx);
-    const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cr-z1*sr,z2=y*sr+z1*cr,f=FOV/(FOV+z2);return [W/2+x1*f,H*.4+y1*f,f,z2]};
+    const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cr-z1*sr,z2=y*sr+z1*cr,f=FOV/(FOV+z2);return [W/2+x1*f,OY+y1*f,f,z2]};
   const orbit=(t,front)=>{
     const R=Math.min(W*.36,FOV*.42),rings=[[.3,1,'232,236,241']];
     cx.lineWidth=1.2;
@@ -232,7 +232,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
     });
   };
   const bg=t=>{
-    const vx=W/2-cam.ry*W*.4,vy=H*.42+cam.rx*H*.4;
+    const vx=W/2-cam.ry*W*.4,vy=OY+cam.rx*H*.4;
     const g=cx.createRadialGradient(vx,vy,0,vx,vy,Math.max(W,H)*.6);
     g.addColorStop(0,'rgba(120,140,200,.10)');g.addColorStop(1,'rgba(5,6,10,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H);
     for(const s of stars){
@@ -247,7 +247,7 @@ h2{text-shadow:0 1px 0 #1c2130,0 2px 0 #171b28,0 3px 0 #121520,0 4px 0 #0e1018,0
     const try_=mouse.on?(mouse.x/W-.5)*.4:0,trx=mouse.on?-(mouse.y/H-.5)*.2:0;
     if(!reduce){cam.ry+=(try_-cam.ry)*.05;cam.rx+=(trx-cam.rx)*.05}
     cx.clearRect(0,0,W,H);bg(t);orbit(t,false);
-    const cy_=Math.cos(cam.ry),sy_=Math.sin(cam.ry),cr_=Math.cos(cam.rx),sr_=Math.sin(cam.rx),ox=W/2,oy=H*.4,base=W<600?1.6:1.9,mx=mouse.x,my=mouse.y,act=!reduce;
+    const cy_=Math.cos(cam.ry),sy_=Math.sin(cam.ry),cr_=Math.cos(cam.rx),sr_=Math.sin(cam.rx),ox=W/2,oy=OY,base=W<600?1.6:1.9,mx=mouse.x,my=mouse.y,act=!reduce;
     const paths={};
     for(const p of pts){
       if(act){
